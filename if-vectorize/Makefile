@@ -11,3 +11,6 @@ fma: fma.c
 
 clean:
 	rm scalar sse fma
+
+clean-all:
+	rm scalar sse fma *.txt
