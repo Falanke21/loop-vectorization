@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #include <xmmintrin.h>
 
@@ -32,6 +33,23 @@ void print_average(double *times, int num_trials)
 		sum += times[i];
 	}
 	printf("Average time: %f\n", sum / num_trials);
+}
+
+void write_to_file(double *times, int num_trials, const char *exe_path)
+{
+	// Get file name by argv[0]
+	char *outfile_name = strrchr(exe_path, '/') + 1;
+	outfile_name = strcat(outfile_name, ".txt");
+
+	FILE *fp;
+	fp = fopen(outfile_name, "w");
+
+	for (int i = 0; i < num_trials; i++)
+	{
+		fprintf(fp, "%f,", times[i]);
+	}
+
+	fclose(fp);
 }
 
 double trial(int n)
@@ -80,6 +98,7 @@ int main(int argc, char const *argv[])
 		times[i] = trial(n);
 	}
 	print_average(times, num_trials);
+	write_to_file(times, num_trials, argv[0]);
 
 	return 0;
 }
