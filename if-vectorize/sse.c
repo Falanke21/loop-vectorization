@@ -6,13 +6,17 @@
 #include <xmmintrin.h>
 
 // Perform the operation a[i] += b[i] * c[i];
-// if a[i] is >= 50
+// if a[i] is > 49
 // with n iterations
 void do_loop(int n, double *a, double *b, double *c)
 {
-	for (int i = 0; i < n; i += 2)
+	// Use a loop upper bound to handle the case when n is not
+	// divisible by the vector length (when n is odd and vector is length 2)
+	int upper_bound = n / 2 * 2;
+	int i = 0;
+	for (; i < upper_bound; i += 2)
 	{
-		if (a[i] >= 50 && a[i + 1] >= 50)
+		if (a[i] > 49 && a[i + 1] > 49)
 		{
 			// Do vectorization
 			__m128d vec_a = _mm_loadu_pd(&a[i]);
@@ -22,11 +26,30 @@ void do_loop(int n, double *a, double *b, double *c)
 			vec_a = _mm_add_pd(vec_a, product);
 			_mm_store_pd(&a[i], vec_a);
 		}
+		else if (!(a[i] > 49) && !(a[i + 1] > 49))
+		{
+			// Do nothing
+		}
 		else
 		{
-			// Do scalar operation
+			// Only 1 loop element should be updated
+			// Do a loop unroll
+			if (a[i] > 49)
+			{
+				a[i] += b[i] * c[i];
+			}
+			else
+			{
+				a[i + 1] += b[i + 1] * c[i + 1];
+			}
+		}
+	}
+	// Now handle the remainder of n / 2
+	for (; i < n; i++)
+	{
+		if (a[i] > 49)
+		{
 			a[i] += b[i] * c[i];
-			a[i + 1] += b[i + 1] * c[i + 1];
 		}
 	}
 }

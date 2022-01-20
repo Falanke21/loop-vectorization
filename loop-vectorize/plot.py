@@ -24,7 +24,7 @@ def main():
     plt.plot(x, sse, label="SSE")
     plt.plot(x, fma, label="FMA")
     plt.xlabel("# of trials")
-    plt.ylabel("Time")
+    plt.ylabel("Time(s)")
     plt.title("Simple Vectorizations at {} iterations".format(iterations))
     plt.legend()
     plt.savefig('simple-{}.png'.format(iterations))

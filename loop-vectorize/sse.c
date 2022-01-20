@@ -9,7 +9,11 @@
 // with n iterations
 void do_loop(int n, double *a, double *b, double *c)
 {
-	for (int i = 0; i < n; i += 4)
+	// Use a loop upper bound to handle the case when n is not
+	// divisible by the vector length (when n is odd and vector is length 2)
+	int upper_bound = n / 2 * 2;
+	int i = 0;
+	for (; i < upper_bound; i += 2)
 	{
 		__m128d vec_a = _mm_loadu_pd(&a[i]);
 		__m128d vec_b = _mm_loadu_pd(&b[i]);
@@ -17,6 +21,11 @@ void do_loop(int n, double *a, double *b, double *c)
 		__m128d product = _mm_mul_pd(vec_b, vec_c);
 		vec_a = _mm_add_pd(vec_a, product);
 		_mm_store_pd(&a[i], vec_a);
+	}
+	// Now handle the remainder of n / 2
+	for (; i < n; i++)
+	{
+		a[i] += b[i] * c[i];
 	}
 }
 

@@ -24,7 +24,7 @@ def main():
     plt.plot(x, sse, label="SSE")
     plt.plot(x, fma, label="FMA")
     plt.xlabel("# of trials")
-    plt.ylabel("Time")
+    plt.ylabel("Time(s)")
     plt.title("Conditional Vectorizations at {} iterations".format(iterations))
     plt.legend()
     plt.savefig('conditional-{}.png'.format(iterations))
