@@ -33,12 +33,12 @@ void do_loop(int n, double *a, double *b, double *c)
 		else
 		{
 			// Only 1 loop element should be updated
-			// Do a loop unroll
+			// Do loop unrolling
 			if (a[i] > 49)
 			{
 				a[i] += b[i] * c[i];
 			}
-			else
+			if (a[i + 1] > 49)
 			{
 				a[i + 1] += b[i + 1] * c[i + 1];
 			}
