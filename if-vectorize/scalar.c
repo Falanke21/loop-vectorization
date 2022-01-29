@@ -8,9 +8,10 @@
 // with n iterations
 void do_loop(int n, double *a, double *b, double *c)
 {
+	int cutoff = 20;
 	for (int i = 0; i < n; i++)
 	{
-		if (a[i] >= 50)
+		if (a[i] >= cutoff)
 		{
 			a[i] += b[i] * c[i];
 		}

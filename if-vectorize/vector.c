@@ -6,7 +6,7 @@
 #include <immintrin.h>
 
 // Perform the operation a[i] += b[i] * c[i];
-// if a[i] is > cutoff
+// if a[i] is >= cutoff
 // with n iterations
 void do_loop(int n, double *a, double *b, double *c)
 {
@@ -18,7 +18,7 @@ void do_loop(int n, double *a, double *b, double *c)
 	int i = 0;
 	for (; i < upper_bound; i += stride)
 	{
-		if (a[i] > cutoff && a[i + 1] > cutoff && a[i + 2] > cutoff && a[i + 3] > cutoff)
+		if (a[i] >= cutoff && a[i + 1] >= cutoff && a[i + 2] >= cutoff && a[i + 3] >= cutoff)
 		{
 			__m256d vec_a = _mm256_loadu_pd(&a[i]);
 			__m256d vec_b = _mm256_loadu_pd(&b[i]);
@@ -26,7 +26,7 @@ void do_loop(int n, double *a, double *b, double *c)
 			vec_a = _mm256_fmadd_pd(vec_b, vec_c, vec_a);
 			_mm256_storeu_pd(&a[i], vec_a);
 		}
-		else if (!(a[i] > cutoff) && !(a[i + 1] > cutoff) && !(a[i + 3] > cutoff) && !(a[i + 4] > cutoff))
+		else if (!(a[i] >= cutoff) && !(a[i + 1] >= cutoff) && !(a[i + 3] >= cutoff) && !(a[i + 4] >= cutoff))
 		{
 			// Do nothing
 		}
@@ -34,19 +34,19 @@ void do_loop(int n, double *a, double *b, double *c)
 		{
 			// Only 1 loop element should be updated
 			// Do loop unrolling
-			if (a[i] > cutoff)
+			if (a[i] >= cutoff)
 			{
 				a[i] += b[i] * c[i];
 			}
-			if (a[i + 1] > cutoff)
+			if (a[i + 1] >= cutoff)
 			{
 				a[i + 1] += b[i + 1] * c[i + 1];
 			}
-			if (a[i + 2] > cutoff)
+			if (a[i + 2] >= cutoff)
 			{
 				a[i + 2] += b[i + 2] * c[i + 2];
 			}
-			if (a[i + 3] > cutoff)
+			if (a[i + 3] >= cutoff)
 			{
 				a[i + 3] += b[i + 3] * c[i + 3];
 			}
