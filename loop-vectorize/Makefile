@@ -1,16 +1,13 @@
-all: scalar sse fma
+all: scalar vector
 
 scalar: scalar.c
 	gcc scalar.c -o scalar
 
-sse: sse.c
-	gcc sse.c -o sse
-
-fma: fma.c
-	gcc fma.c -mfma -o fma
+vector: vector.c
+	gcc vector.c -mfma -o vector
 
 clean:
-	rm scalar sse fma
+	rm scalar vector
 
 clean-all:
-	rm scalar sse fma *.txt
+	rm scalar vector *.txt

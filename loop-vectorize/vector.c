@@ -3,7 +3,6 @@
 #include <time.h>
 #include <string.h>
 
-#include <xmmintrin.h>
 #include <immintrin.h>
 
 // Perform the operation a[i] += b[i] * c[i];
@@ -12,17 +11,18 @@ void do_loop(int n, double *a, double *b, double *c)
 {
 	// Use a loop upper bound to handle the case when n is not
 	// divisible by the vector length (when n is odd and vector is length 2)
-	int upper_bound = n / 2 * 2;
+	int stride = 4;
+	int upper_bound = n / stride * stride;
 	int i = 0;
-	for (; i < upper_bound; i += 2)
+	for (; i < upper_bound; i += stride)
 	{
-		__m128d vec_a = _mm_loadu_pd(&a[i]);
-		__m128d vec_b = _mm_loadu_pd(&b[i]);
-		__m128d vec_c = _mm_loadu_pd(&c[i]);
-		vec_a = _mm_fmadd_pd(vec_b, vec_c, vec_a);
-		_mm_store_pd(&a[i], vec_a);
+		__m256d vec_a = _mm256_loadu_pd(&a[i]);
+		__m256d vec_b = _mm256_loadu_pd(&b[i]);
+		__m256d vec_c = _mm256_loadu_pd(&c[i]);
+		vec_a = _mm256_fmadd_pd(vec_b, vec_c, vec_a);
+		_mm256_storeu_pd(&a[i], vec_a);
 	}
-	// Now handle the remainder of n / 2
+	// Now handle the remainder of n / stride
 	for (; i < n; i++)
 	{
 		a[i] += b[i] * c[i];

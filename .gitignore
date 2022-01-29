@@ -1,5 +1,4 @@
 scalar
-fma
-sse
+vector
 *.txt
 *.png
