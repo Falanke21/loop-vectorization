@@ -3,30 +3,30 @@
 #include <time.h>
 #include <string.h>
 
-#include <xmmintrin.h>
 #include <immintrin.h>
 
 // Perform the operation a[i] += b[i] * c[i];
-// if a[i] is > 49
+// if a[i] is > cutoff
 // with n iterations
 void do_loop(int n, double *a, double *b, double *c)
 {
 	// Use a loop upper bound to handle the case when n is not
 	// divisible by the vector length (when n is odd and vector is length 2)
-	int upper_bound = n / 2 * 2;
+	int stride = 4;
+	int cutoff = 20;
+	int upper_bound = n / stride * stride;
 	int i = 0;
-	for (; i < upper_bound; i += 2)
+	for (; i < upper_bound; i += stride)
 	{
-		if (a[i] > 49 && a[i + 1] > 49)
+		if (a[i] > cutoff && a[i + 1] > cutoff && a[i + 2] > cutoff && a[i + 3] > cutoff)
 		{
-			// Do vectorization
-			__m128d vec_a = _mm_loadu_pd(&a[i]);
-			__m128d vec_b = _mm_loadu_pd(&b[i]);
-			__m128d vec_c = _mm_loadu_pd(&c[i]);
-			vec_a = _mm_fmadd_pd(vec_b, vec_c, vec_a);
-			_mm_store_pd(&a[i], vec_a);
+			__m256d vec_a = _mm256_loadu_pd(&a[i]);
+			__m256d vec_b = _mm256_loadu_pd(&b[i]);
+			__m256d vec_c = _mm256_loadu_pd(&c[i]);
+			vec_a = _mm256_fmadd_pd(vec_b, vec_c, vec_a);
+			_mm256_storeu_pd(&a[i], vec_a);
 		}
-		else if (!(a[i] > 49) && !(a[i + 1] > 49))
+		else if (!(a[i] > cutoff) && !(a[i + 1] > cutoff) && !(a[i + 3] > cutoff) && !(a[i + 4] > cutoff))
 		{
 			// Do nothing
 		}
@@ -34,23 +34,28 @@ void do_loop(int n, double *a, double *b, double *c)
 		{
 			// Only 1 loop element should be updated
 			// Do loop unrolling
-			if (a[i] > 49)
+			if (a[i] > cutoff)
 			{
 				a[i] += b[i] * c[i];
 			}
-			if (a[i + 1] > 49)
+			if (a[i + 1] > cutoff)
 			{
 				a[i + 1] += b[i + 1] * c[i + 1];
 			}
+			if (a[i + 2] > cutoff)
+			{
+				a[i + 2] += b[i + 2] * c[i + 2];
+			}
+			if (a[i + 3] > cutoff)
+			{
+				a[i + 3] += b[i + 3] * c[i + 3];
+			}
 		}
 	}
-	// Now handle the remainder of n / 2
+	// Now handle the remainder of n / stride
 	for (; i < n; i++)
 	{
-		if (a[i] > 49)
-		{
-			a[i] += b[i] * c[i];
-		}
+		a[i] += b[i] * c[i];
 	}
 }
 
