@@ -85,7 +85,7 @@ double trial(int n)
 int main(int argc, char const *argv[])
 {
 	// Set up
-	int num_trials = 10;
+	int num_trials = 50;
 	int n = 100000000;
 	if (argc > 1)
 	{
