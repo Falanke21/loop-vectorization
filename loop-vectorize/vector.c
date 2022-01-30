@@ -79,10 +79,12 @@ double trial(int n)
 	}
 
 	// Target loop
-	clock_t begin = clock();
+	struct timespec start, end;
+	clock_gettime(CLOCK_REALTIME, &start);
 	do_loop(n, a, b, c);
-	clock_t end = clock();
-	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	clock_gettime(CLOCK_REALTIME, &end);
+	double time_spent = (end.tv_sec - start.tv_sec) +
+                        (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
 	free(a);
 	free(b);
