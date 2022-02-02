@@ -8,7 +8,7 @@
 // with n iterations
 void do_loop(int n, double *a, double *b, double *c)
 {
-	int cutoff = 20;
+	int cutoff = 5;
 	for (int i = 0; i < n; i++)
 	{
 		if (a[i] >= cutoff)

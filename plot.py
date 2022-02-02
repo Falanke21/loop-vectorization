@@ -20,13 +20,15 @@ def main():
 
     plt.xlabel("Loop Type")
     plt.ylabel("Median Time(s)")
-    plt.title("Simple Vectorizations")
+    plt.title("Loop-Vectorize with loop length 100M")
 
     x = ["Scalar", "Vectorized", "Scalar with if",
          "Vectorized with if"]
     y = [statistics.median(scalar), statistics.median(
         vector), statistics.median(if_scalar), statistics.median(if_vector)]
     plt.bar(x, y)
+    # generate text on bars
+    [plt.text(x[i], y[i], round(y[i], 6), ha='center') for i in range(len(x))]
 
     plt.savefig('result.png')
 

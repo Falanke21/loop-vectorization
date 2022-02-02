@@ -13,7 +13,7 @@ void do_loop(int n, double *a, double *b, double *c)
 	// Use a loop upper bound to handle the case when n is not
 	// divisible by the vector length (when n is odd and vector is length 2)
 	int stride = 4;
-	int cutoff = 20;
+	int cutoff = 5;
 	int upper_bound = n / stride * stride;
 	int i = 0;
 	for (; i < upper_bound; i += stride)
